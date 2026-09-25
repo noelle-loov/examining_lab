@@ -1,0 +1,5 @@
+# For maths
+numpy
+
+# For plotting
+matplotlib
