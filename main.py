@@ -4,6 +4,19 @@ from utils import set_pyplot_to_swedish, linReg
 
 set_pyplot_to_swedish(plt)
 
+# Values used for independent variables when they are kept constant:
+constant_2 = 1
+constant_3 = 1
+constant_4 = 1
+constant_5 = 1
+constant_6 = 1
+# Convert all constants to base units (remove prefix)
+constant_2 *= 1
+constant_3 *= 1
+constant_4 *= 1
+constant_5 *= 1
+constant_6 *= 1
+
 # Independent and dependent variables, rename as necessary to what was actually measured.
 # Add or remove variables as necessary
 
@@ -13,12 +26,6 @@ dependent_1 = np.array([1, 2, 3, 4])
 # Convert to base units (remove prefix)
 independent_1 *= 1
 dependent_1 *= 1
-# INCLUDE THE CONSTANT VALUES TOO IN ALL SETS OF MEASUREMENTS
-independent_2 = np.array([1 for _ in range(4)])
-independent_3 = np.array([1 for _ in range(4)])
-independent_4 = np.array([1 for _ in range(4)])
-independent_5 = np.array([1 for _ in range(4)])
-independent_6 = np.array([1 for _ in range(4)])
 
 # Linearize by taking the natural logarithm of both values, then perform regression
 slope, intercept, slope_uncertainty, intercept_uncertainty = linReg(np.log(independent_1), np.log(dependent_1))
@@ -149,3 +156,6 @@ exp_1: float = 1
 exp_2: float = 1
 exp_3: float = 1
 
+# Copy in formula for calculation constant
+
+# Set up long arrays for the independent variables, padded with the constant values when they are not being varied
