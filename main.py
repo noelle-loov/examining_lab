@@ -1,9 +1,37 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from utils import set_pyplot_to_swedish, linReg
 
-set_pyplot_to_swedish(plt)
+# Set pyplot to use Swedish locale for numeric formatting
+import locale
+_, axes = plt.subplots()
+locale.setlocale(locale.LC_NUMERIC, ('sv_SE', 'UTF-8'))
+axes.ticklabel_format(useLocale=True)
 
+def linReg(x: np.ndarray, y: np.ndarray):
+  """
+  Performs linear regression on the given x and y data.
+  x: independent variable (numpy array)
+  y: dependent variable (numpy array)
+
+  Returns: (k1, k2, u1, u2)
+  k1: slope of the fitted line
+  k2: intercept of the fitted line
+  u1: uncertainty in the slope
+  u2: uncertainty in the intercept
+  """
+  n = len(x)
+  k1: int | float = (n*np.sum(x*y)-np.sum(x)*np.sum(y)) / ( n*np.sum(x**2)-np.sum(x)**2)
+  k2: int | float = (np.sum(y) - (k1 * np.sum(x))) / n
+
+  # Standard deviation for the regression
+  dev = np.sqrt((1 / (n - 2)) * np.sum((y - (k1 * x) - k2) ** 2))
+  meanX = np.mean(x)
+  # Uncertainty in slope
+  u1: int | float = dev * np.sqrt(1/np.sum((x - meanX) ** 2))
+  # Uncertainty in intercept
+  u2: int | float = dev * np.sqrt((1/n) + ((meanX ** 2) / np.sum((x - meanX) ** 2)))
+
+  return (k1, k2, u1, u2)
 
 # First set of measured values; varying Amplitude (cm) and measuring period time (s)
 amplitude_1 = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
@@ -28,6 +56,7 @@ print(f'intercept 1: {intercept} ± {intercept_uncertainty:.2g}')
 
 plt.plot(np.log(amplitude_1), np.log(period_1), 'bo', label='Measured period time with varied amplitude')
 plt.plot(np.log(amplitude_1), slope*np.log(amplitude_1) + intercept, 'r-', label='Fitted line')
+plt.title('Natural Logarithm of Period time vs Amplitude')
 plt.xlabel('ln(amplitude (m)) (ln(m))')
 plt.ylabel('ln(period (s)) (ln(s))')
 plt.legend()
@@ -58,6 +87,7 @@ print(f'intercept 2: {intercept} ± {intercept_uncertainty:.2g}')
 
 plt.plot(np.log(length_2), np.log(period_2), 'bo', label='Measured period time with varied length')
 plt.plot(np.log(length_2), slope*np.log(length_2) + intercept, 'r-', label='Fitted line')
+plt.title('Natural Logarithm of Period time vs Length')
 plt.xlabel('ln(length (m)) (ln(m))')
 plt.ylabel('ln(period (s)) (ln(s))')
 plt.legend()
@@ -86,6 +116,7 @@ print(f'intercept 3: {intercept} ± {intercept_uncertainty:.2g}')
 
 plt.plot(np.log(width_3), np.log(period_3), 'bo', label='Measured period time with varied width')
 plt.plot(np.log(width_3), slope*np.log(width_3) + intercept, 'r-', label='Fitted line')
+plt.title('Natural Logarithm of Period time vs Width')
 plt.xlabel('ln(width (m)) (ln(m))')
 plt.ylabel('ln(period (s)) (ln(s))')
 plt.legend()
@@ -114,6 +145,7 @@ print(f'intercept 4: {intercept} ± {intercept_uncertainty:.2g}')
 
 plt.plot(np.log(height_4), np.log(period_4), 'bo', label='Measured period time with varied height')
 plt.plot(np.log(height_4), slope*np.log(height_4) + intercept, 'r-', label='Fitted line 4')
+plt.title('Natural Logarithm of Period time vs Height')
 plt.xlabel('ln(height (m)) (ln(m))')
 plt.ylabel('ln(period (s)) (ln(s))')
 plt.legend()
@@ -148,7 +180,8 @@ print(f'intercept all: {intercept} ± {intercept_uncertainty:.2g}')
 
 plt.plot(x, all_periods, 'bo', label='Measured period time with varied parameters')
 plt.plot(x, slope*x + intercept, 'r-', label='Fitted line all')
-plt.xlabel('(length^2 / height) * (density / elasticity)^0.5 (m)')
+plt.title('Period time vs Combined Parameters')
+plt.xlabel('(length^2 / height) * (density / elasticity)^0.5 (s)')
 plt.ylabel('period (s)')
 plt.legend()
 plt.show()
@@ -165,7 +198,8 @@ print(f'intercept relevant: {intercept} ± {intercept_uncertainty:.2g}')
 
 plt.plot(relevant_x, relevant_periods, 'bo', label='Measured period time with relevant parameters')
 plt.plot(relevant_x, slope*relevant_x + intercept, 'r-', label='Fitted line relevant')
-plt.xlabel('(length^2 / height) * (density / elasticity)^0.5 (m)')
+plt.title('Period time vs Relevant Parameters')
+plt.xlabel('(length^2 / height) * (density / elasticity)^0.5 (s)')
 plt.ylabel('period (s)')
 plt.legend()
 plt.show()
@@ -179,7 +213,8 @@ print(f'intercept length only: {intercept} ± {intercept_uncertainty:.2g}')
 
 plt.plot(x, period_2, 'bo', label='Measured period time with only length varied')
 plt.plot(x, slope*x + intercept, 'r-', label='Fitted line length only')
-plt.xlabel('(length^2 / height) * (density / elasticity)^0.5 (m)')
+plt.title('Period time vs parameters from length measurement')
+plt.xlabel('(length^2 / height) * (density / elasticity)^0.5 (s)')
 plt.ylabel('period (s)')
 plt.legend()
 plt.show()
